@@ -39,10 +39,16 @@ class DashboardRedirectController extends Controller
         return view('dashboard.public', compact('inquiries'));
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $inquiries = \App\Models\Inquiry::where('user_id', auth()->id())->get();
-        return view('inquiry.history', compact('inquiries'));
+    $inquiries = Inquiry::with(['assignment.agency'])
+        ->where('user_id', Auth::id())
+        ->when($request->keyword, function ($query) use ($request) {
+            $query->where('subject', 'like', '%' . $request->keyword . '%');
+        })
+        ->paginate(2);
+
+    return view('inquiry.history', compact('inquiries'));
     }
 
 }
