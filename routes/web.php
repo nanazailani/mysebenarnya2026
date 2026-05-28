@@ -188,11 +188,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('assignment-report/pdf', [InquiryAssignmentController::class, 'exportPdf'])
                     ->name('assignment-report.pdf');
 
-                Route::get('/mcmc/assign', [App\Http\Controllers\MCMC\InquiryAssignmentController::class, 'reassignForm'])
-                    ->name('mcmc.assign-form');
+                // Route::get('/mcmc/assign', [App\Http\Controllers\MCMC\InquiryAssignmentController::class, 'reassignForm'])
+                //     ->name('mcmc.assign-form');
 
-                Route::post('/mcmc/inquiries/reassign', [\App\Http\Controllers\MCMC\InquiryAssignController::class, 'update'])
-                    ->name('mcmc.assign.update');
+                // Route::post('/mcmc/inquiries/reassign', [\App\Http\Controllers\MCMC\InquiryAssignController::class, 'update'])
+                //     ->name('mcmc.assign.update');
 
                 Route::get('assignment-report/excel', function () {
                     $month = request('month');
@@ -224,6 +224,8 @@ Route::middleware('auth')->group(function () {
     // 4.6) Agency Staff Dashboard & Profile (only role = agency_staff && is_first_login = false)
     Route::middleware(['auth', EnsureAgencyStaff::class])->group(function () {
 
+
+    
         // Dashboard
         Route::get('/dashboard/agency', [AgencyDashboardController::class, 'index'])
             ->name('dashboard.agency');
@@ -252,6 +254,12 @@ Route::middleware('auth')->group(function () {
 
                 Route::put('inquiries/{id}', [\App\Http\Controllers\Agency\InquiryTrackingController::class, 'update'])
                     ->name('inquiries.update');
+
+
+                // TAMBAH BARIS NI ↓
+                Route::post('inquiries/{id}/progress', [InquiryProgressController::class, 'store'])
+                    ->name('inquiries.progress.store');
+                    
             });
     });
 

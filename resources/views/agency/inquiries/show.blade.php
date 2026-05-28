@@ -30,10 +30,9 @@
 <div class="card mt-6">
     <h3 class="text-lg font-semibold mb-4">Jurisdiction Assessment & Decision</h3>
 
-    <form method="POST" action="{{ route('agency.inquiries.update', $inquiry->id) }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('agency.inquiries.progress.store', $inquiry->id) }}" >
+        <!-- @method('PUT') -->
         @csrf
-        @method('PUT')
-
         {{-- Review Notes --}}
         <div class="mb-4">
             <label class="block mb-2 font-semibold">Review Notes</label>
