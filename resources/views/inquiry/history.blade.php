@@ -6,6 +6,22 @@
     <h2 class="section-title">Inquiry History</h2>
 
     <div class="card">
+
+        {{--CR-INQ-01: Search form added--}}
+        <form method="GET" action="{{ route('inquiry.history') }}" class="mb-4 flex gap-2">
+            <input
+                type="text"
+                name="keyword"
+                value="{{ request('keyword') }}"
+                placeholder="Search by subject..."
+                class="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full"
+            >
+            <button type="submit"
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition">
+                Search
+            </button>
+        </form>
+
         @if ($inquiries->isEmpty())
             <p class="text-gray-600">You haven't submitted any inquiries yet.</p>
         @else
@@ -61,7 +77,7 @@
                             </td>
                             <td class="p-3">{{ $reviewedBy }}</td>
 
-                             {{-- ✅ Supporting Document Column --}}
+                            {{--Supporting Document Column--}}
                             <td class="p-3">
                                 @if ($inquiry->supporting_document)
                                     <a href="{{ asset('storage/' . $inquiry->supporting_document) }}" 
@@ -75,18 +91,25 @@
                             </td>           
 
                             <td class="p-3">{{ \Carbon\Carbon::parse($inquiry->created_at)->format('d M Y h:i A') }}</td>
-
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
+            {{--CR-INQ-01: Pagination links added--}}
+            <div class="mt-4">
+                @if (method_exists($inquiries, 'links'))
+                    {{ $inquiries->appends(request()->query())->links() }}
+                @endif
+            </div>
+
         @endif
     </div>
-    </div> <!-- close card -->
+    </div>
         <div class="mt-6 text-right">
         <a href="{{ route('dashboard.public') }}" class="inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
             ← Back to Home
-    </a>
-</div>
+        </a>
+    </div>
 
 @endsection

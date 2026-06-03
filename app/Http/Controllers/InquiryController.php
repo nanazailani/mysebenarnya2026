@@ -36,7 +36,7 @@ class InquiryController extends Controller
             ? $request->file('attachment')->store('inquiries', 'public')
             : null;
 
-        Inquiry::create([
+        $inquiry = Inquiry::create([
             'user_id'       => Auth::id(),
             'full_name'     => $request->full_name,
             'phone_number'  => $request->phone_number,
@@ -48,17 +48,21 @@ class InquiryController extends Controller
             'attachment'    => $attachmentPath,
         ]);
 
-        return redirect()->route('inquiry.thank-you');
+        return redirect()->route('inquiry.thank-you')
+            ->with('inquiry_id', $inquiry->id);
     }
 
     // Show inquiry history (Public User)
-    public function history()
+    public function history(Request $request)
     {
-        $inquiries = Inquiry::with(['assignment.agency'])
-            ->where('user_id', Auth::id())
-            ->get();
+    $inquiries = Inquiry::with(['assignment.agency'])
+        ->where('user_id', Auth::id())
+        ->when($request->keyword, function ($query) use ($request) {
+            $query->where('subject', 'like', '%' . $request->keyword . '%');
+        })
+        ->paginate(10);
 
-        return view('inquiry.history', compact('inquiries'));
+    return view('inquiry.history', compact('inquiries'));
     }
 
     // Submit review (Agency)
